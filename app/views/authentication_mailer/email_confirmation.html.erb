@@ -1,0 +1,24 @@
+<h1>Bem-vindo ao <%= I18n.t("site_name") %></h1>
+
+<p>
+  É um prazer termos você aqui, <%= @user.profile.name %>.
+</p>
+
+<p>
+  Por questões de segurança, para você ter acesso ao <%= I18n.t("site_name") %>
+  é necessário que você confirme sua conta.
+</p>
+
+<p>
+  <%= link_to(
+    "Clique aqui",
+    "#{Rails.application.credentials[Rails.env.to_sym][:front_end_url]}/authentication/confirm_account?token=#{@user.confirmation_token}"
+  ) %> para confirmar a sua conta e liberar o acesso ao portal.
+</p>
+
+<p>
+  <small>
+    <b>Observação:</b> Caso esse cadastro não foi feito por você, por favor,
+    ignorar este e-mail.
+  </small>
+</p>

@@ -1,0 +1,32 @@
+pt-BR:
+  model_timestamp: &model_timestamp
+    created_at: Criado em
+    updated_at: Atualizado em
+
+  activerecord:
+    models:
+      church:
+        one: Igreja
+        other: Igrejas
+      profile:
+        one: Perfil
+        other: Perfis
+      user:
+        one: Usuário
+        other: Usuários
+    attributes:
+      church:
+        <<: *model_timestamp
+      profile:
+        name: Nome
+        user_id: Usuário
+        user: Usuário
+        church_id: Igreja
+        church: Igreja
+        <<: *model_timestamp
+      user:
+        email: E-mail
+        password: Senha
+        church_id: Igreja
+        church: Igreja
+        <<: *model_timestamp
