@@ -6,6 +6,9 @@ Rails.application.routes.draw do
     post 'authentication/sign_in'
     post 'authentication/confirm_email/:token', to: "authentication#confirm_email"
     post 'authentication/resend_confirmation_mail'
+    post 'authentication/request_password_recover'
+    get 'authentication/check_password_recover_token'
+    put 'authentication/recover_password'
 
     # Users
     get 'users/find_by_token', to: 'users#find_by_token'

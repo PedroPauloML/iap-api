@@ -1,3 +1,9 @@
-Authentication#email_confirmation
+Bem-vindo ao <%= I18n.t("site_name") %>
 
-<%= @greeting %>, find me in app/views/authentication_mailer/email_confirmation.text.erb
+É um prazer termos você aqui, <%= @user.profile.name %>.
+
+Por questões de segurança, para você ter acesso ao <%= I18n.t("site_name") %> é necessário que você confirme sua conta.
+
+Acesse o link (<%= "#{Rails.application.credentials[Rails.env.to_sym][:front_end_url]}/authentication/confirm_account?token=#{@user.confirmation_token}" %>) para confirmar a sua conta e liberar o acesso ao portal.
+
+Observação: Caso esse cadastro não foi feito por você, por favor, ignorar este e-mail.

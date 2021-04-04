@@ -68,6 +68,7 @@ class V1::AuthenticationController < V1Controller
     end
 
     user.account_confirmed = true
+    user.confirmation_token = nil
 
     if user.save
       render(
@@ -115,6 +116,96 @@ class V1::AuthenticationController < V1Controller
           400
         )
       end
+    end
+  end
+
+  def request_password_recover
+    unless params[:email].present?
+      return render_simple_error(
+        "O e-mail não informado. Por favor, insira o endereço de e-mail do usuário.",
+        400
+      )
+    end
+
+    user = User.find_by_email(params[:email])
+
+    if user
+      user.password_recover_token = Digest::SHA1.hexdigest([Time.now, rand].join)
+      user.save
+
+      AuthenticationMailer.with(user: user).request_password_recover.deliver_later
+
+      render(
+        json: {
+          message: "O e-mail de solicitação de recuperação de senha foi enviado para o seu endereço de e-mail!"
+        }
+      )
+    else
+      unless user
+        render_simple_error(
+          "Não foi encontrado nenhum #{User.model_name.human.downcase} com esse e-mail. Verifique se o e-mail informado está correto.",
+          400
+        )
+      end
+    end
+  end
+
+  def check_password_recover_token
+    unless params[:token]
+      return render_simple_error("Token não informado", 400)
+    end
+
+    user = User.find_by_password_recover_token(params[:token])
+
+    if user
+      render(json: { message: "Token válido" })
+    else
+      render_simple_error("Token inválido", 406)
+    end
+  end
+
+  def recover_password
+    unless params[:token]
+      return render_simple_error("Token não informado", 400)
+    end
+
+    user = User.find_by_password_recover_token(params[:token])
+
+    unless user.present?
+      return render_simple_error(
+        "Token de confirmação de senha expirado. Por favor, solicite uma nova recuperação de senha",
+        400
+      )
+    end
+
+    unless params[:password]
+      return render_simple_error("Senha não informada", 400)
+    end
+
+    unless params[:password_confirmation]
+      return render_simple_error("Confirmação de senha não informada", 400)
+    end
+
+    if params[:password] != params[:password_confirmation]
+      return render_simple_error('Confirmação de senha não coincide com a senha', 422)
+    end
+
+    user.password = params[:password]
+    user.password_recover_token = nil
+
+    if user.save
+      AuthenticationMailer.with(user: user).password_recovered.deliver_later
+
+      render(
+        json: {
+          message: "Senha recuperada com sucesso! Por favor, acesse a página inicial e faça login novamente"
+        }
+      )
+    else
+      resource_errors = ResourceErrors.new(user)
+      render(
+        json: { error: resource_errors.formatted_errors[:error].first }, status: 422
+      )
     end
   end
 
