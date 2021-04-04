@@ -4,8 +4,19 @@ Rails.application.configure do
   # Settings specified here will take precedence over those in config/application.rb.
 
   # Mailcatcher
+  # config.action_mailer.smtp_settings = { :address => '127.0.0.1', :port => 1025 }
+
+  # Mailer settings
   config.action_mailer.delivery_method = :smtp
-  config.action_mailer.smtp_settings = { :address => '127.0.0.1', :port => 1025 }
+  config.action_mailer.smtp_settings = {
+    address:              'smtp.gmail.com',
+    port:                 587,
+    domain:               'gmail.com',
+    user_name:            Rails.application.credentials[:GMAIL_EMAIL],
+    password:             Rails.application.credentials[:GMAIL_PASSWORD],
+    authentication:       :plain,
+    enable_starttls_auto: true
+  }
 
   # In the development environment your application's code is reloaded any time
   # it changes. This slows down response time but is perfect for development
@@ -35,7 +46,7 @@ Rails.application.configure do
   # config.active_storage.service = :local
 
   # Don't care if the mailer can't send.
-  config.action_mailer.raise_delivery_errors = false
+  config.action_mailer.raise_delivery_errors = true
 
   config.action_mailer.perform_caching = false
 

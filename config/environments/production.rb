@@ -3,6 +3,18 @@ require "active_support/core_ext/integer/time"
 Rails.application.configure do
   # Settings specified here will take precedence over those in config/application.rb.
 
+  # Mailer settings
+  config.action_mailer.delivery_method = :smtp
+  config.action_mailer.smtp_settings = {
+    address:              'smtp.gmail.com',
+    port:                 587,
+    domain:               'gmail.com',
+    user_name:            Rails.application.credentials[:GMAIL_EMAIL],
+    password:             Rails.application.credentials[:GMAIL_PASSWORD],
+    authentication:       :plain,
+    enable_starttls_auto: true
+  }
+
   # Code is not reloaded between requests.
   config.cache_classes = true
 
