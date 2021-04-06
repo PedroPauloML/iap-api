@@ -11,7 +11,11 @@ Rails.application.routes.draw do
     put 'authentication/recover_password'
 
     # Users
-    get 'users/find_by_token', to: 'users#find_by_token'
+    resources :users, only: [:update] do
+      collection do
+        get 'find_by_token'
+      end
+    end
   end
 
   match 'v1/*path', to: 'v1#routing_error', via: :all
