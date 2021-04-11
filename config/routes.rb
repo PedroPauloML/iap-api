@@ -15,6 +15,10 @@ Rails.application.routes.draw do
       collection do
         get 'find_by_token'
       end
+
+      member do
+        put 'update_avatar'
+      end
     end
   end
 

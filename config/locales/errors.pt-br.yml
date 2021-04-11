@@ -1,0 +1,4 @@
+pt-BR:
+  errors:
+    messages:
+      extension_whitelist_error: Formato do arquivo não permitido. Selecione um arquivo com a extensão permitida.

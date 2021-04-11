@@ -1,4 +1,7 @@
 class Profile < ApplicationRecord
+  # Carrierwaver
+  mount_uploader :avatar, AvatarUploader
+
   # Relationships
   belongs_to(:user)
   belongs_to(:church)

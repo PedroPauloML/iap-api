@@ -29,6 +29,23 @@ class V1::UsersController < V1Controller
     end
   end
 
+  def update_avatar
+    return render_simple_error("Avatar não informado", 400) unless params[:avatar]
+    profile = current_user.profile
+
+    profile.avatar = params[:avatar]
+
+    if profile.save
+      @user = current_user.reload
+      render :show
+    else
+      resource_errors = ResourceErrors.new(profile)
+      render(
+        json: { error: resource_errors.formatted_errors[:error].first }, status: 422
+      )
+    end
+  end
+
   private
 
   def user_params

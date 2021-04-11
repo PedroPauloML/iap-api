@@ -16,6 +16,10 @@ gem 'rails-i18n'
 gem 'bcrypt'
 # A ruby implementation of the RFC 7519 OAuth JSON Web Token (JWT) standard.
 gem 'jwt'
+# Classier solution for file uploads for Rails, Sinatra and other Ruby web frameworks https://github.com/carrierwaveuploader/carrierwave
+gem 'carrierwave', '~> 2.0'
+# Cloudinary GEM for Ruby on Rails integration https://github.com/cloudinary/cloudinary_gem
+gem 'cloudinary'
 
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails', branch: 'main'
 gem 'rails', '~> 6.1.3'
