@@ -8,6 +8,9 @@ pt-BR:
       church:
         one: Igreja
         other: Igrejas
+      news:
+        one: Notícia
+        other: Notícias
       profile:
         one: Perfil
         other: Perfis
@@ -16,6 +19,19 @@ pt-BR:
         other: Usuários
     attributes:
       church:
+        <<: *model_timestamp
+      news:
+        cover: Capa
+        title: Título
+        caption: Sub-título
+        content_html: Conteúdo em HTML
+        content_text: Conteúdo em texto
+        published: Publicado?
+        published_at: Publicado em
+        church_id: Igreja
+        church: Igreja
+        author_id: Autor
+        author: Autor
         <<: *model_timestamp
       profile:
         name: Nome

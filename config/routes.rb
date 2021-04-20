@@ -10,6 +10,10 @@ Rails.application.routes.draw do
     get 'authentication/check_password_recover_token'
     put 'authentication/recover_password'
 
+    # News
+    put 'news/:id/publish', to: "news#publish", as: "publish"
+    resources :news, except: [:new, :edit]
+
     # Users
     resources :users, only: [:update] do
       collection do

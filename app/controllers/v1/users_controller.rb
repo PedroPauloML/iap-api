@@ -1,6 +1,8 @@
 class V1::UsersController < V1Controller
   before_action :current_user, except: [:find_by_token]
 
+  # GET /v1/users/find_by_token
+  # URL_PATH find_by_token_v1_users_path
   def find_by_token
     return render_simple_error("Token não informado", 400) unless params[:token]
 
@@ -17,6 +19,8 @@ class V1::UsersController < V1Controller
     render :show
   end
 
+  # PUT/PATCH /v1/users/:id
+  # URL_PATH v1_user_path(id: 1)
   def update
     if current_user.update(user_params)
       @user = current_user
@@ -29,6 +33,8 @@ class V1::UsersController < V1Controller
     end
   end
 
+  # PUT /v1/users/:id/update_avatar
+  # URL_PATH update_avatar_v1_user_path(id: 1)
   def update_avatar
     return render_simple_error("Avatar não informado", 400) unless params[:avatar]
     profile = current_user.profile

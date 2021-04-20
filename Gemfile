@@ -20,6 +20,8 @@ gem 'jwt'
 gem 'carrierwave', '~> 2.0'
 # Cloudinary GEM for Ruby on Rails integration https://github.com/cloudinary/cloudinary_gem
 gem 'cloudinary'
+# Intelligent search made easy with Rails and Elasticsearch https://github.com/ankane/searchkick
+gem 'searchkick'
 
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails', branch: 'main'
 gem 'rails', '~> 6.1.3'

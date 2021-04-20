@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_04_11_170713) do
+ActiveRecord::Schema.define(version: 2021_04_12_130256) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -18,6 +18,22 @@ ActiveRecord::Schema.define(version: 2021_04_11_170713) do
   create_table "churches", force: :cascade do |t|
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
+  end
+
+  create_table "news", force: :cascade do |t|
+    t.string "cover"
+    t.string "title"
+    t.string "caption"
+    t.string "content_html"
+    t.string "content_text"
+    t.boolean "published", default: false
+    t.datetime "published_at"
+    t.bigint "church_id", null: false
+    t.bigint "author_id", null: false
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["author_id"], name: "index_news_on_author_id"
+    t.index ["church_id"], name: "index_news_on_church_id"
   end
 
   create_table "profiles", force: :cascade do |t|
@@ -29,6 +45,15 @@ ActiveRecord::Schema.define(version: 2021_04_11_170713) do
     t.string "avatar"
     t.index ["church_id"], name: "index_profiles_on_church_id"
     t.index ["user_id"], name: "index_profiles_on_user_id"
+  end
+
+  create_table "tags", force: :cascade do |t|
+    t.string "name"
+    t.string "slug"
+    t.string "taggable_id"
+    t.string "taggable_type"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
   end
 
   create_table "users", force: :cascade do |t|
@@ -43,6 +68,7 @@ ActiveRecord::Schema.define(version: 2021_04_11_170713) do
     t.index ["church_id"], name: "index_users_on_church_id"
   end
 
+  add_foreign_key "news", "churches"
   add_foreign_key "profiles", "churches"
   add_foreign_key "profiles", "users"
   add_foreign_key "users", "churches"

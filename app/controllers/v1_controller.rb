@@ -10,6 +10,14 @@ class V1Controller < ApplicationController
     )
   end
 
+  def page
+    params[:page] || 1
+  end
+
+  def per_page
+    params[:per_page] || 10
+  end
+
   private
 
   def render_simple_error(message, status_code)
