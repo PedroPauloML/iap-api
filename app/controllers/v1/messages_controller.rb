@@ -1,11 +1,11 @@
-class V1::NewsController < V1Controller
+class V1::MessagesController < V1Controller
   before_action(:current_user, only: [:create, :update, :publish, :destroy])
-  before_action(:set_news, only: [:show, :update, :publish, :destroy])
+  before_action(:set_message, only: [:show, :update, :publish, :destroy])
 
-  # GET /v1/news
-  # URL_PATH v1_news_index_path
+  # GET /v1/messages
+  # URL_PATH v1_messages_index_path
   def index
-    if News.search.count > 0
+    if Message.search.count > 0
       query = (params[:query].present? ? params[:query] : "*")
       where = {}
 
@@ -41,7 +41,7 @@ class V1::NewsController < V1Controller
         end
       end
 
-      @news = News.search(
+      @messages = Message.search(
           query,
           where: where,
           page: page,
@@ -49,7 +49,7 @@ class V1::NewsController < V1Controller
           order: { published_at: { order: 'desc', unmapped_type: 'long' } }
         )
 
-      @total_objects = News.search(
+      @total_objects = Message.search(
           query,
           where: where,
           body_options: { track_total_hits: true }
@@ -67,22 +67,22 @@ class V1::NewsController < V1Controller
     end
   end
 
-  # GET /v1/news/:id
-  # URL_PATH v1_news_path(id: 1)
+  # GET /v1/messages/:id
+  # URL_PATH v1_messages_path(id: 1)
   def show
   end
 
-  # GET /v1/news
-  # URL_PATH v1_news_path
+  # POST /v1/messages
+  # URL_PATH v1_messages_path
   def create
-    @news = News.new(news_params)
+    @message = Message.new(message_params)
 
-    @news.author_id = current_user.id
+    @message.author_id = current_user.id
 
-    if @news.save
+    if @message.save
       render :show
     else
-      resource_errors = ResourceErrors.new(@news)
+      resource_errors = ResourceErrors.new(@message)
       render(
         json: { error: resource_errors.formatted_errors[:error].first },
         status: 422
@@ -90,18 +90,14 @@ class V1::NewsController < V1Controller
     end
   end
 
-  # PUT/PATCH /v1/news/:id
-  # URL_PATH v1_news_path(id: 1)
+  # PUT/PATCH /v1/messages/:id
+  # URL_PATH v1_messages_path(id: 1)
   def update
     # raise "Breakpoint"
-    if params[:news].present? and params[:news][:cover].blank?
-      params[:news].delete(:cover)
-    end
-
-    if @news.update(news_params)
+    if @message.update(message_params)
       render :show
     else
-      resource_errors = ResourceErrors.new(@news)
+      resource_errors = ResourceErrors.new(@message)
       render(
         json: { error: resource_errors.formatted_errors[:error].first },
         status: 422
@@ -109,16 +105,16 @@ class V1::NewsController < V1Controller
     end
   end
 
-  # PUT /v1/news/:id/publish
-  # URL_PATH publish_v1_news_path(id: 1)
+  # PUT /v1/messages/:id/publish
+  # URL_PATH publish_v1_messages_path(id: 1)
   def publish
-    @news.published = true
-    @news.published_at = Time.now
+    @message.published = true
+    @message.published_at = Time.now
 
-    if @news.save
+    if @message.save
       render :show
     else
-      resource_errors = ResourceErrors.new(@news)
+      resource_errors = ResourceErrors.new(@message)
       render(
         json: { error: resource_errors.formatted_errors[:error].first },
         status: 422
@@ -126,13 +122,13 @@ class V1::NewsController < V1Controller
     end
   end
 
-  # DELETE /v1/news/:id
-  # URL_PATH v1_news_path(id: 1)
+  # DELETE /v1/messages/:id
+  # URL_PATH v1_messages_path(id: 1)
   def destroy
-    if @news.destroy
+    if @message.destroy
       render json: {}
     else
-      resource_errors = ResourceErrors.new(@news)
+      resource_errors = ResourceErrors.new(@message)
       render(
         json: { error: resource_errors.formatted_errors[:error].first },
         status: 422
@@ -142,16 +138,15 @@ class V1::NewsController < V1Controller
 
   private
 
-  def set_news
-    @news = News.find_by_id(params[:id])
-    unless @news
-      return render_simple_error("#{News.model_name.human} não encontrada", 404)
+  def set_message
+    @message = Message.find_by_id(params[:id])
+    unless @message
+      return render_simple_error("#{Message.model_name.human} não encontrada", 404)
     end
   end
 
-  def news_params
-    params.require(:news).permit(
-      :cover,
+  def message_params
+    params.require(:message).permit(
       :title,
       :caption,
       :content_html,

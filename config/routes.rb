@@ -10,9 +10,21 @@ Rails.application.routes.draw do
     get 'authentication/check_password_recover_token'
     put 'authentication/recover_password'
 
+    # Messages
+    resources :messages, except: [:new, :edit] do
+      member do
+        put 'publish'
+      end
+
+      resources :favorites, only: [:index, :create, :destroy], controller: "messages/favorites"
+    end
+
     # News
-    put 'news/:id/publish', to: "news#publish", as: "publish"
-    resources :news, except: [:new, :edit]
+    resources :news, except: [:new, :edit] do
+      member do
+        put 'publish'
+      end
+    end
 
     # Users
     resources :users, only: [:update] do
