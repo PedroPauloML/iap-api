@@ -11,10 +11,16 @@ class V1Controller < ApplicationController
   end
 
   def page
+    if params[:page].present? and params[:page].to_i < 1
+      return render_simple_error("O número da página deve ser maior que 0", 404)
+    end
     params[:page] || 1
   end
 
   def per_page
+    if params[:per_page].present? and params[:per_page].to_i < 1
+      return render_simple_error("O número de resultados por página deve ser maior que 0", 404)
+    end
     params[:per_page] || 10
   end
 

@@ -1,0 +1,1 @@
+json.(@favorite, *@favorite.attribute_names)

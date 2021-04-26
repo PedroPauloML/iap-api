@@ -16,7 +16,11 @@ Rails.application.routes.draw do
         put 'publish'
       end
 
-      resources :favorites, only: [:index, :create, :destroy], controller: "messages/favorites"
+      collection do
+        get "favorites", to: "messages/favorites#index", as: "favorites"
+      end
+
+      resources :favorites, only: [:create, :destroy], controller: "messages/favorites"
     end
 
     # News

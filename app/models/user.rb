@@ -7,6 +7,8 @@ class User < ApplicationRecord
   # Relationships
   belongs_to(:church)
   has_one(:profile, dependent: :destroy)
+  has_many(:message_favorites, class_name: "Message::Favorite", dependent: :destroy)
+  has_many(:favorite_messages, through: :message_favorites, source: :message)
 
   # Validations
   validates_presence_of(:email, :password)

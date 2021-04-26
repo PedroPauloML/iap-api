@@ -1,4 +1,4 @@
-json.objects @messages.results do |message|
+json.objects @messages do |message|
   json.(message, *message.attribute_names)
 
   tags = message.tags
@@ -16,8 +16,8 @@ json.objects @messages.results do |message|
   end
 end
 json.pagination do
-  json.current_page     @messages.current_page
+  json.current_page     @page
   json.total_objects    @total_objects
-  json.per_page         @messages.per_page
-  json.total_pages      @messages.total_pages
+  json.per_page         @per_page
+  json.total_pages      @total_pages
 end

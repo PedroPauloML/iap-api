@@ -54,6 +54,13 @@ class V1::MessagesController < V1Controller
           where: where,
           body_options: { track_total_hits: true }
         ).total_count
+
+      @favorites = Message::Favorite.where(
+          user_id: current_user.id,
+          message_id: @messages.results.collect(&:id)
+        )
+        .collect {|favorite| [favorite.message_id, favorite]}
+        .to_h
     else
       render(json: {
         objects: [],
