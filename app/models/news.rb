@@ -33,4 +33,8 @@ class News < ApplicationRecord
     super(value)
     self.church_id = self.author.church_id
   end
+
+  def author_name
+    self.author.profile.name
+  end
 end

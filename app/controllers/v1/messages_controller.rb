@@ -41,12 +41,18 @@ class V1::MessagesController < V1Controller
         end
       end
 
+      if where[:published]
+        order = { published_at: { order: 'desc', unmapped_type: 'long' } }
+      else
+        order = { created_at: { order: 'desc', unmapped_type: 'long' } }
+      end
+
       @messages = Message.search(
           query,
           where: where,
           page: page,
           per_page: per_page,
-          order: { published_at: { order: 'desc', unmapped_type: 'long' } }
+          order: order
         )
 
       @total_objects = Message.search(
@@ -55,12 +61,18 @@ class V1::MessagesController < V1Controller
           body_options: { track_total_hits: true }
         ).total_count
 
-      @favorites = Message::Favorite.where(
-          user_id: current_user.id,
-          message_id: @messages.results.collect(&:id)
-        )
-        .collect {|favorite| [favorite.message_id, favorite]}
-        .to_h
+      if current_user
+        @favorites = Message::Favorite.where(
+            user_id: current_user.id,
+            message_id: @messages.results.collect(&:id)
+          )
+          .collect {|favorite| [favorite.message_id, favorite]}
+          .to_h
+      else
+        @favorites = {}
+      end
+
+      render :index
     else
       render(json: {
         objects: [],
@@ -115,17 +127,26 @@ class V1::MessagesController < V1Controller
   # PUT /v1/messages/:id/publish
   # URL_PATH publish_v1_messages_path(id: 1)
   def publish
-    @message.published = true
-    @message.published_at = Time.now
+    if @message.author_id == current_user.id or current_user.id == 1
+      @message.published = true
+      @message.published_at = Time.now
 
-    if @message.save
-      render :show
+      if @message.save
+        render :show
+      else
+        resource_errors = ResourceErrors.new(@message)
+        render(
+          json: { error: resource_errors.formatted_errors[:error].first },
+          status: 422
+        )
+      end
     else
-      resource_errors = ResourceErrors.new(@message)
-      render(
-        json: { error: resource_errors.formatted_errors[:error].first },
-        status: 422
+      msg = (
+        "Você não pode publicar essa #{Message.model_name.human.downcase}, " +
+        "pois você não é o autor dela"
       )
+
+      render(json: { error: { full_message: msg } }, status: 403)
     end
   end
 

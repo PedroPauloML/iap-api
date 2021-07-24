@@ -39,10 +39,14 @@ class V1Controller < ApplicationController
       return render_simple_error("Autorização negada", 401)
     end
 
-    @current_user ||= User.find_by_password_hash(payload[:data])
+    if payload
+      @current_user ||= User.find_by_password_hash(payload[:data])
 
-    return render_simple_error("Autorização negada", 401) unless @current_user
+      return render_simple_error("Autorização negada", 401) unless @current_user
 
-    @current_user
+      @current_user
+    else
+      nil
+    end
   end
 end

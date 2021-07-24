@@ -41,12 +41,18 @@ class V1::NewsController < V1Controller
         end
       end
 
+      if where[:published]
+        order = { published_at: { order: 'desc', unmapped_type: 'long' } }
+      else
+        order = { created_at: { order: 'desc', unmapped_type: 'long' } }
+      end
+
       @news = News.search(
           query,
           where: where,
           page: page,
           per_page: per_page,
-          order: { published_at: { order: 'desc', unmapped_type: 'long' } }
+          order: order
         )
 
       @total_objects = News.search(
@@ -112,17 +118,26 @@ class V1::NewsController < V1Controller
   # PUT /v1/news/:id/publish
   # URL_PATH publish_v1_news_path(id: 1)
   def publish
-    @news.published = true
-    @news.published_at = Time.now
+    if @news.author_id == current_user.id or current_user.id == 1
+      @news.published = true
+      @news.published_at = Time.now
 
-    if @news.save
-      render :show
+      if @news.save
+        render :show
+      else
+        resource_errors = ResourceErrors.new(@news)
+        render(
+          json: { error: resource_errors.formatted_errors[:error].first },
+          status: 422
+        )
+      end
     else
-      resource_errors = ResourceErrors.new(@news)
-      render(
-        json: { error: resource_errors.formatted_errors[:error].first },
-        status: 422
+      msg = (
+        "Você não pode publicar essa #{News.model_name.human.downcase}, " +
+        "pois você não é o autor dela"
       )
+
+      render(json: { error: { full_message: msg } }, status: 403)
     end
   end
 
